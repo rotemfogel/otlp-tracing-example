@@ -1,0 +1,25 @@
+[project]
+name = "otlp-tracing-example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Rotem Fogel", email = "rfogel@nvidia.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.3",
+    "opentelemetry-api>=1.45.1",
+    "opentelemetry-exporter-otlp>=1.45.1",
+    "opentelemetry-instrumentation-flask>=0.66b1",
+    "opentelemetry-instrumentation-requests>=0.66b1",
+    "opentelemetry-sdk>=1.45.1",
+    "requests>=2.34.2",
+]
+
+[project.scripts]
+otlp-tracing-example = "otlp_tracing_example:main"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"

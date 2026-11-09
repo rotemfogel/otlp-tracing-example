@@ -1,0 +1,36 @@
+x-adapter: &adapter
+  image: otlp-tracing-example
+  environment:
+    OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+  depends_on: [otel-collector]
+
+services:
+  orchestrator:
+    build: .
+    image: otlp-tracing-example
+    command: ["orchestrator.py"]
+    ports: ["5000:5000"]
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      ADAPTER_URLS: http://adapter-1:5001,http://adapter-2:5002,http://adapter-3:5003
+    depends_on: [adapter-1, adapter-2, adapter-3]
+
+  adapter-1:
+    <<: *adapter
+    command: ["adapter.py", "5001"]
+  adapter-2:
+    <<: *adapter
+    command: ["adapter.py", "5002"]
+  adapter-3:
+    <<: *adapter
+    command: ["adapter.py", "5003"]
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.159.0
+    command: ["--config=/etc/otel.yml"]
+    volumes: ["./otel-collector.yml:/etc/otel.yml:ro"]
+    depends_on: [jaeger]
+
+  jaeger:
+    image: jaegertracing/jaeger:2.22.0
+    ports: ["16686:16686"]
